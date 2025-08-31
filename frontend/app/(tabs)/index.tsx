@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ScreenHeader from "../../src/components/ScreenHeader";
 import SideMenu from "../../src/components/SideMenu";
-import CaptureBar from "../../src/components/CaptureBar";
+import CaptureInput from "../../src/components/CaptureInput";
 import Segmented from "../../src/components/Segmented";
 import GroupedList from "../../src/components/GroupedList";
 import SectionHeader from "../../src/components/base/SectionHeader";
@@ -51,11 +51,7 @@ export default function HomeScreen() {
     const pushSection = (title: string, arr: RowItem[], key: string) => {
       flat.push({ kind: "header", key: `hdr-${key}`, title });
       if (arr.length === 0) {
-        flat.push({
-          kind: "row",
-          key: `empty-${key}`,
-          item: { id: `empty-${key}`, title: "No items yet.", subtitle: "", completed: false } as any
-        });
+        flat.push({ kind: "row", key: `empty-${key}`, item: { id: `empty-${key}`, title: "No items yet.", subtitle: "", completed: false } as any });
       } else {
         for (const it of arr) flat.push({ kind: "row", key: it.id, item: it });
       }
@@ -66,8 +62,7 @@ export default function HomeScreen() {
     return flat;
   }, [byFilter, today]);
 
-  // In-list bottom inset so last row never hides behind the dock
-  const dockHeight = 64; // Emerald Dock height
+  const dockHeight = 64;
   const bottomInset = dockHeight + inset.bottom + 16;
 
   const onSubmit = (text: string) => {
@@ -79,15 +74,17 @@ export default function HomeScreen() {
     <View style={{ flex: 1, backgroundColor: "transparent" }}>
       <ScreenHeader title="Home" onMenu={() => setMenuOpen(true)} />
 
-      {/* Top focus area under the radial halo (title + capture + filters) */}
+      {/* Unified CaptureInput pill */}
       <View style={{ paddingHorizontal: t.spacing.lg, paddingTop: t.spacing.sm, paddingBottom: t.spacing.sm }}>
-        <CaptureBar placeholder="State the oath… I'll make it happen." onSubmit={onSubmit} />
+        <CaptureInput placeholder="State the oath… I'll make it happen." onSubmit={onSubmit} />
       </View>
+
+      {/* Centered segmented (from P2) */}
       <View style={{ paddingHorizontal: t.spacing.lg, paddingBottom: t.spacing.md, alignItems: "center" }}>
         <Segmented segments={[...filters]} value={filter} onChange={(v) => setFilter(v as any)} />
       </View>
 
-      {/* THE ONLY SCROLLER: the FlatList inside GroupedList */}
+      {/* The ONLY scroller: FlatList in GroupedList */}
       <View style={{ flex: 1, paddingHorizontal: t.spacing.lg }}>
         <GroupedList<FlatRow>
           data={sections}
@@ -102,7 +99,6 @@ export default function HomeScreen() {
               />
             );
           }}
-          // No outer spacer — put the free space INSIDE the list
           bottomInset={bottomInset}
           topInset={0}
         />
