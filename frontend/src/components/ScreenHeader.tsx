@@ -1,20 +1,31 @@
-import { View, Text, Pressable, StyleSheet, useColorScheme } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Svg, { Defs, LinearGradient, Stop, Rect } from "react-native-svg";
 import { useSafeTokens } from "../design/safeTokens";
 
 /**
  * ScreenHeader — Transparent header with a subtle theme-aware SCRIM behind content
- * - Maintains transparent background to let the global gradient show
- * - Adds a faint top→transparent gradient UNDER the header content to keep title readable in light/dark
+ * - Transparent to let the global gradient show (P1)
+ * - Adds a faint top→transparent scrim UNDER the header content to keep title readable
+ * - Supports optional LEFT action (icon or text) and RIGHT action (hamburger/menu)
  * - Rhythm: pt=24 (xl), pb=16 (md), px=lg
  */
-export default function ScreenHeader({ title, onMenu }: { title: string; onMenu?: () => void }) {
+export default function ScreenHeader({
+  title,
+  onMenu,
+  leftIcon = "chevron-back",
+  leftLabel,
+  onLeftPress
+}: {
+  title: string;
+  onMenu?: () => void;
+  leftIcon?: keyof typeof Ionicons.glyphMap;
+  leftLabel?: string;
+  onLeftPress?: () => void;
+}) {
   const t = useSafeTokens();
-  const scheme = useColorScheme();
-  const isDark = scheme === "dark";
-  // Very light scrim for readability: darker in dark mode, lighter in light mode
-  const scrimTopOpacity = isDark ? 0.14 : 0.06;
+  // Very light scrim for readability
+  const scrimTopOpacity = 0.10; // dark enough in both themes due to tokens.backdrop
 
   return (
     <View style={{ position: "relative" }}>
@@ -43,9 +54,42 @@ export default function ScreenHeader({ title, onMenu }: { title: string; onMenu?
           backgroundColor: "transparent"
         }}
       >
-        <Text style={{ color: t.palette.textPrimary, fontSize: t.type.h1.size, fontWeight: "700" }} numberOfLines={1}>
+        {/* LEFT: back/done action (optional) */}
+        {onLeftPress ? (
+          <Pressable
+            onPress={onLeftPress}
+            accessibilityRole="button"
+            accessibilityLabel={leftLabel || "Back"}
+            style={{
+              minWidth: 44,
+              height: 44,
+              paddingHorizontal: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 999,
+              backgroundColor: t.palette.pillBg,
+              flexDirection: "row",
+              gap: 6
+            }}
+          >
+            <Ionicons name={leftIcon} size={20} color={t.palette.textSecondary} />
+            {leftLabel ? (
+              <Text style={{ color: t.palette.textSecondary, fontWeight: "700" }}>{leftLabel}</Text>
+            ) : null}
+          </Pressable>
+        ) : (
+          <View style={{ width: 44, height: 44 }} />
+        )}
+
+        {/* TITLE */}
+        <Text
+          style={{ color: t.palette.textPrimary, fontSize: t.type.h1.size, fontWeight: "700" }}
+          numberOfLines={1}
+        >
           {title}
         </Text>
+
+        {/* RIGHT: hamburger/menu (optional) */}
         {onMenu ? (
           <Pressable
             onPress={onMenu}
