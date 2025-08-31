@@ -127,7 +127,7 @@ export function EmeraldDockVisuals({
 export function EmeraldDockTabBar({ state, navigation }: any) {
   const [width, setWidth] = useState(0);
   return (
-    <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={{ flex: 1 }}>
+    <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       <EmeraldDockVisuals
         width={width}
         activeIndex={state.index}
