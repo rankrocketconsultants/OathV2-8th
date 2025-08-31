@@ -67,14 +67,12 @@ export default function DaySheet({
     const def = (settings as any)?.defaultTimes?.morning || (settings as any)?.defaultReminderTime || "09:00";
     const { hh, mm } = parseHHMM(def);
     base.setHours(hh, mm, 0, 0);
-    addItem(v, { datetime: base, type: "time" });
+    addItem(v, { datetime: base.toISOString(), type: "time" });
     // small nudge: animate list wrapper to acknowledge add (TaskRow also has mount wash)
-    if (listNudge.current) {
-      Animated.sequence([
-        Animated.timing(listNudge.current, { toValue: 1, duration: 90, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-        Animated.timing(listNudge.current, { toValue: 0, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true })
-      ]).start();
-    }
+    Animated.sequence([
+      Animated.timing(listNudge, { toValue: 1, duration: 90, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(listNudge, { toValue: 0, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true })
+    ]).start();
   };
 
   // List enter nudge on add
