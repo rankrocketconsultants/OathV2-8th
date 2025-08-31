@@ -25,10 +25,10 @@ function isoAt(hours: number, minutes = 0, dayOffset = 0) {
 let _items: Item[] = [
   // Today
   { id: "i1", title: "Finish ECON reading", subtitle: "Ch. 6–7", datetime: isoAt(9, 0, 0), completed: true, type: "time", status: "honored" },
-  { id: "i2", title: "Call dentist", subtitle: "Reschedule cleaning", datetime: isoAt(15, 30, 0), completed: true, type: "action" },
+  { id: "i2", title: "Call dentist", subtitle: "Reschedule cleaning", datetime: isoAt(15, 30, 0), completed: false, type: "action" },
   // Upcoming (tomorrow / later)
   { id: "i3", title: "Gym: push day", datetime: isoAt(18, 0, 1), completed: false, type: "anchor", status: "rescheduled" },
-  { id: "i4", title: "Submit internship app", datetime: isoAt(11, 0, 2), completed: true, type: "time" },
+  { id: "i4", title: "Submit internship app", datetime: isoAt(11, 0, 2), completed: false, type: "time" },
   // Later (unscheduled or past)
   { id: "i5", title: "Declutter notes", completed: false, type: "action" },
   { id: "i6", title: "Idea: launch study group", completed: false, type: "memory" },
